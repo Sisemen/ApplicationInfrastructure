@@ -13,7 +13,7 @@ namespace Core.Kernel.DataAccess.Context
 
         public IContext Create()
         {
-            return CurrentContext ?? (CurrentContext = CommonServiceLocator.ServiceLocator.Current.GetInstance<IContext>());
+            return CurrentContext ??= CommonServiceLocator.ServiceLocator.Current.GetInstance<IContext>();
         }
 
         public void Dispose()
