@@ -18,7 +18,7 @@ namespace Core.Kernel.DataAccess.Context
         {
             _logger = logger;
 
-            base.Database.AutoTransactionsEnabled = true;
+            base.Database.AutoTransactionBehavior = AutoTransactionBehavior.Always;
         }
 
         public EfCoreContext(DbContextOptions<EfCoreContext> options, IContextHelper contextHelper, ILogger<EfCoreContext> logger)
@@ -27,7 +27,7 @@ namespace Core.Kernel.DataAccess.Context
             _logger = logger;
             _contextHelper = contextHelper;
 
-            base.Database.AutoTransactionsEnabled = true;
+            base.Database.AutoTransactionBehavior = AutoTransactionBehavior.Always;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -67,11 +67,23 @@ namespace Core.Kernel.DataAccess.Context
             await base.Set<T>().AddRangeAsync(entities);
         }
 
-        public new bool Update<T>(T entity) where T : class, IEntity
+        public async Task<bool> UpdateAsync<T>(T entity) where T : class, IEntity
         {
+            object id;
+
+            switch (entity)
+            {
+                case IntBasedEntity intBasedEntity:
+                    id = base.Entry(intBasedEntity).Property(p => p.Id).CurrentValue;
+                    break;
+                default:
+                    _logger.LogError($"Unsupported entity type. EntityName: {nameof(T)}.");
+                    return false;
+            }
+
             try
             {
-                base.Set<T>().Update(entity);
+                base.Entry(await base.Set<T>().FindAsync(id)).State = EntityState.Modified;
 
                 return true;
             }
@@ -83,22 +95,8 @@ namespace Core.Kernel.DataAccess.Context
             }
             catch (Exception exception)
             {
-                object id;
-
-                switch (entity)
-                {
-                    case IntBasedEntity intBasedEntity:
-                        id = base.Entry(intBasedEntity).Property(p => p.Id).CurrentValue;
-                        break;
-                    default:
-                        _logger.LogError(exception, "Unsupported entity type. EntityName: {entityName}.", typeof(T).Name);
-                        return false;
-                }
-
                 _logger.LogError(exception,
-                                 "An exception has occurred while updating entity. EntityName: {entityName}, Id: {id}.",
-                                 typeof(T).Name,
-                                 id);
+                                 $"An exception has occurred while updating entity. EntityName: {nameof(T)}, Id: {id}.");
 
                 return false;
             }

@@ -14,7 +14,7 @@ namespace Core.Kernel.DataAccess.Context
         {
             _contextHelper = contextHelper;
 
-            base.Database.AutoTransactionsEnabled = true;
+            base.Database.AutoTransactionBehavior = AutoTransactionBehavior.Always;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

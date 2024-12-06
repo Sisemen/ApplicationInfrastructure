@@ -10,12 +10,8 @@ namespace Core.Kernel.Helper
     {
         public static IList<Assembly> FindAssemblies(string includeCondition, string excludeCondition)
         {
-            var executionDirectory = Path.GetDirectoryName(Uri.UnescapeDataString(new UriBuilder(Assembly.GetExecutingAssembly().CodeBase).Path));
-            if (executionDirectory == null)
-            {
-                throw new Exception("Can't find Execution Directory!!!");
-            }
-
+            var executionDirectory = Path.GetDirectoryName(Uri.UnescapeDataString(new UriBuilder(Assembly.GetExecutingAssembly().Location).Path))
+                ?? throw new Exception("Can't find Execution Directory!!!");
             var excludedAssemblies = string.IsNullOrEmpty(excludeCondition)
                                          ? new List<string>()
                                          : Directory.GetFiles(executionDirectory, excludeCondition)
