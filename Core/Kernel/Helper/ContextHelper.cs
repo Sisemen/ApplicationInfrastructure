@@ -17,7 +17,7 @@ namespace Core.Kernel.Helper
 
         public void ApplyModelCreating(ModelBuilder modelBuilder)
         {
-            var assemblies = AssemblyHelper.FindAssemblies("*.ModelLayer.dll", string.Empty);
+            var assemblies = AssemblyHelper.FindAssemblies("*.Model.dll", string.Empty);
 
             foreach (var entityType in assemblies.SelectMany(assembly => assembly.GetTypes())
                                                  .Where(t => t.GetInterfaces().Any(i => i.Name == nameof(IEntity)) && t.IsClass && !t.IsAbstract && !t.ContainsGenericParameters))
@@ -26,7 +26,7 @@ namespace Core.Kernel.Helper
 
                 if (entity == null)
                 {
-                    _logger.LogWarning("EfCoreContext.OnModelCreating: {entityFullName} entity was not found.", entityType.FullName);
+                    _logger.LogWarning("Context.OnModelCreating: {entityFullName} entity was not found.", entityType.FullName);
                 }
 
                 entity?.OnConfiguringEntity(modelBuilder);
