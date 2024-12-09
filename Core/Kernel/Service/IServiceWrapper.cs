@@ -1,6 +1,8 @@
-﻿namespace Core.Kernel.Service
+﻿using Core.Kernel.Dependency;
+
+namespace Core.Kernel.Service
 {
-    public interface IServiceWrapper
+    public interface IServiceWrapper : IPerLifetimeScopeDependencyInjection
     {
     }
 }

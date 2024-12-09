@@ -1,4 +1,5 @@
-﻿using Core.Kernel.DataAccess.Model;
+﻿using CommonServiceLocator;
+using Core.Kernel.DataAccess.Model;
 using Core.Kernel.Helper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -14,9 +15,24 @@ namespace Core.Kernel.DataAccess.Context
         private readonly IContextHelper _contextHelper;
         private readonly ILogger<EfCoreContext> _logger;
 
-        public EfCoreContext(ILogger<EfCoreContext> logger)
+        public EfCoreContext() : base()
+        {
+            _logger = ServiceLocator.Current.GetInstance<ILogger<EfCoreContext>>();
+
+            base.Database.AutoTransactionBehavior = AutoTransactionBehavior.Always;
+        }
+
+        public EfCoreContext(DbContextOptions<EfCoreContext> options, ILogger<EfCoreContext> logger) : base(options)
         {
             _logger = logger;
+
+            base.Database.AutoTransactionBehavior = AutoTransactionBehavior.Always;
+        }
+
+        public EfCoreContext(DbContextOptions<EfCoreContext> options)
+            : base(options)
+        {
+            _logger = ServiceLocator.Current.GetInstance< ILogger<EfCoreContext>>();
 
             base.Database.AutoTransactionBehavior = AutoTransactionBehavior.Always;
         }
@@ -32,7 +48,20 @@ namespace Core.Kernel.DataAccess.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            _contextHelper.ApplyModelCreating(modelBuilder);
+            var assemblies = AssemblyHelper.FindAssemblies("*.Model.dll", string.Empty);
+
+            foreach (var entityType in assemblies.SelectMany(assembly => assembly.GetTypes())
+                                                 .Where(t => t.GetInterfaces().Any(i => i.Name == nameof(IEntity)) && t.IsClass && !t.IsAbstract && !t.ContainsGenericParameters))
+            {
+                var entity = Activator.CreateInstance(entityType) as IEntity;
+
+                if (entity == null)
+                {
+                    _logger.LogWarning("Context.OnModelCreating: {entityFullName} entity was not found.", entityType.FullName);
+                }
+
+                entity?.OnConfiguringEntity(modelBuilder);
+            }
         }
 
         public IQueryable<T> Query<T>(bool noTracking) where T : class, IEntity
