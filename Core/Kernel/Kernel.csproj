@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Folder Include="DataAccess\Model\" />
+    <Folder Include="Web\" />
   </ItemGroup>
 
 </Project>
