@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <AssemblyName>Core.Kernel</AssemblyName>
     <RootNamespace>Core.Kernel</RootNamespace>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DataAccess\Model\" />
     <Folder Include="Web\" />
   </ItemGroup>
 
