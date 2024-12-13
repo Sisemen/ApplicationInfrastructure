@@ -2,7 +2,7 @@
 
 namespace Core.Kernel.Service
 {
-    public interface IServiceHandler : IDependencyInjection
+    public interface IServiceHandler : IPerLifetimeScopeDependencyInjection
     {
     }
 }
