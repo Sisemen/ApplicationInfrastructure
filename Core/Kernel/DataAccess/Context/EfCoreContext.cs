@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Core.Kernel.DataAccess.Context
 {
-    public class EfCoreContext : DbContext, IContext
+    public class EfCoreContext : DbContext
     {
         private readonly IContextHelper _contextHelper;
         private readonly ILogger<EfCoreContext> _logger;
