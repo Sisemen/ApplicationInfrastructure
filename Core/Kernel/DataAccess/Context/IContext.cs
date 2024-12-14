@@ -17,6 +17,7 @@ namespace Core.Kernel.DataAccess.Context
         IQueryable<T> Query<T>(bool noTracking) where T : class, IEntity;
         Task<T> GetAsync<T>(object id) where T : class, IEntity;
         Task ApplyChangesAsync();
+        void Rollback();
 
         void Dispose();
     }

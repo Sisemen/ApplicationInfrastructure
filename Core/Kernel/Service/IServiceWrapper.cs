@@ -4,5 +4,6 @@ namespace Core.Kernel.Service
 {
     public interface IServiceWrapper : IPerLifetimeScopeDependencyInjection
     {
+        IServiceHandler ServiceHandler { get; }
     }
 }
