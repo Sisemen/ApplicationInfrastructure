@@ -7,7 +7,7 @@ namespace Core.Kernel.Service
 {
     public class ServiceHandler(IUnitOfWork unitOfWork, ILogger<ServiceHandler> logger) : IServiceHandler
     {
-        public async Task<IDto?> HandleAsync<TResponse>(Func<Task<IDto?>> serviceHandlerDelegate)
+        public async Task<IServiceResponse<IDto?>> HandleAsync<TResponse>(Func<Task<IDto?>> serviceHandlerDelegate)
         {
             try
             {
@@ -15,7 +15,12 @@ namespace Core.Kernel.Service
 
                 await unitOfWork.CommitAsync();
 
-                return response;
+                return new ServiceResponse<IDto?>
+                {
+                    Data = response,
+                    Message = string.Empty,
+                    StatusCode = ResponseStatusCode.Success
+                };
             }
             catch (Exception ex)
             {
@@ -23,7 +28,12 @@ namespace Core.Kernel.Service
 
                 unitOfWork.Rollback();
 
-                return null;
+                return new ServiceResponse<IDto?>
+                {
+                    Data = null,
+                    Message = "Handling service method has been failed.",
+                    StatusCode = ResponseStatusCode.Failed
+                };
             }
         }
     }

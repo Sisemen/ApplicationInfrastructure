@@ -1,7 +1,9 @@
 ﻿namespace Core.Kernel.Service
 {
-    public interface IServiceResponse<T>
+    public interface IServiceResponse<T> where T : IDto?
     {
-        T Value { get; set; }
+        T? Data { get; set; }
+        ResponseStatusCode StatusCode { get; set; }
+        string? Message { get; set; }
     }
 }

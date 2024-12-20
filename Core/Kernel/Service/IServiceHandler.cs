@@ -6,6 +6,6 @@ namespace Core.Kernel.Service
 {
     public interface IServiceHandler : IPerLifetimeScopeDependencyInjection
     {
-        Task<IDto?> HandleAsync<TResponse>(Func<Task<IDto?>> serviceHandlerDelegate);
+        Task<IServiceResponse<IDto?>> HandleAsync<TResponse>(Func<Task<IDto?>> serviceHandlerDelegate);
     }
 }
