@@ -10,7 +10,7 @@ namespace Core.Kernel.Helper
     {
         public static IList<Assembly> FindAssemblies(string includeCondition, string excludeCondition)
         {
-            var executionDirectory = Path.GetDirectoryName(Uri.UnescapeDataString(new UriBuilder(Assembly.GetExecutingAssembly().Location).Path))
+            var executionDirectory = AppContext.BaseDirectory
                 ?? throw new Exception("Can't find Execution Directory!!!");
             var excludedAssemblies = string.IsNullOrEmpty(excludeCondition)
                                          ? new List<string>()
