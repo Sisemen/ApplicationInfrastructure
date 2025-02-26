@@ -19,7 +19,7 @@ namespace Core.Kernel.Bootstrap
         {
             RegisterDependencies(builder);
 
-            DependencyInjectionHelper.RegisterDependencyTypes(builder);
+            //DependencyInjectionHelper.RegisterDependencyTypes(builder);
 
             ServiceLocator.SetLocatorProvider(() => new AutofacServiceLocator(ApplicationContainer));
         }
