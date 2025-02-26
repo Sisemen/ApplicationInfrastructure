@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using Core.Kernel.Dependency;
 using System;
 using System.Linq;
@@ -8,12 +7,11 @@ namespace Core.Kernel.Helper
 {
     public static class DependencyInjectionHelper
     {
-        public static void RegisterDependencyTypes(ContainerBuilder builder)
+        public static ContainerBuilder RegisterDependencyTypes(ContainerBuilder builder, string includeCondition, string excludeCondition)
         {
             try
             {
-                var assemblies = AssemblyHelper.FindAssemblies("RockPaperScissors.*.dll", "*.Views.dll").ToList()
-                                               .Concat(AssemblyHelper.FindAssemblies("Core.Kernel.dll", string.Empty))
+                var assemblies = AssemblyHelper.FindAssemblies(includeCondition, excludeCondition).ToList()
                                                .ToArray();
                 
                 builder.RegisterAssemblyTypes(assemblies)
@@ -33,6 +31,8 @@ namespace Core.Kernel.Helper
                                                   .Any(a => a.IsAssignableFrom(typeof(ISingletonDependencyInjection))))
                        .AsImplementedInterfaces()
                        .SingleInstance();
+
+                return builder;
             }
             catch (Exception ex)
             {

@@ -7,12 +7,8 @@ namespace Core.Kernel.Bootstrap
 {
     public static class BootstrapExtension
     {
-        public static void RegisterDependencies(this ContainerBuilder builder)
-        {
-            DependencyInjectionHelper.RegisterDependencyTypes(builder);
-
-            //ServiceLocator.SetLocatorProvider(() => new AutofacServiceLocator(applicationContainer));
-        }
+        public static ContainerBuilder RegisterKernelDependencies(this ContainerBuilder builder) =>
+            DependencyInjectionHelper.RegisterDependencyTypes(builder, "Core.Kernel.dll", string.Empty);
 
         public static void SetServiceLocator(this ILifetimeScope applicationContainer)
         {
