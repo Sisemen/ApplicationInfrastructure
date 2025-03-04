@@ -8,7 +8,7 @@ namespace Core.Kernel.Bootstrap
 {
     public class Bootstrap
     {
-        protected ILifetimeScope ApplicationContainer { get; set; }
+        protected ILifetimeScope ApplicationContainer { get; set; } = null!;
 
         protected virtual void RegisterDependencies(ContainerBuilder builder)
         {

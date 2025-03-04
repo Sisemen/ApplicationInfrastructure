@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Core.Kernel.DataAccess.Context
 {
-    public interface IUnitOfWork : IPerLifetimeScopeDependencyInjection, IDisposable
+    public interface IUnitOfWork : IPerLifetimeScopeDependencyInjection
     {
         Task CommitAsync();
         void Rollback();

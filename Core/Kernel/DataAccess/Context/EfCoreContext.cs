@@ -12,7 +12,7 @@ namespace Core.Kernel.DataAccess.Context
 {
     public class EfCoreContext : DbContext
     {
-        private readonly IContextHelper _contextHelper;
+        private readonly IContextHelper _contextHelper = null!;
         private readonly ILogger<EfCoreContext> _logger;
 
         public EfCoreContext() : base()
@@ -71,7 +71,7 @@ namespace Core.Kernel.DataAccess.Context
                        : base.Set<T>().AsQueryable();
         }
 
-        public async Task<T> GetAsync<T>(object id) where T : class, IEntity => await base.Set<T>().FindAsync(id);
+        public async Task<T?> GetAsync<T>(object id) where T : class, IEntity => await base.Set<T>().FindAsync(id);
 
         public async Task<T> InsertAsync<T>(T entity) where T : class, IEntity
         {

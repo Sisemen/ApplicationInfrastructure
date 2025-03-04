@@ -3,10 +3,10 @@ using System;
 
 namespace Core.Kernel.DataAccess.Context
 {
-    public class ReadonlyContextFactory: IReadonlyContextFactory, IDisposable
+    public class ReadonlyContextFactory: IReadonlyContextFactory
     {
         private readonly ILifetimeScope _scope;
-        private IReadonlyContext _contextReadonly;
+        private IReadonlyContext _contextReadonly = null!;
 
         public ReadonlyContextFactory(ILifetimeScope scope)
         {
@@ -18,12 +18,6 @@ namespace Core.Kernel.DataAccess.Context
             _contextReadonly = _scope.Resolve<IReadonlyContext>();
 
             return _contextReadonly;
-        }
-
-        public void Dispose()
-        {
-            _contextReadonly?.Dispose();
-            _contextReadonly = null;
         }
     }
 }

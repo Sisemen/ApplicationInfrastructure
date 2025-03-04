@@ -2,9 +2,9 @@
 
 namespace Core.Kernel.DataAccess.Context
 {
-    internal class ContextFactory : IContextFactory, IDisposable
+    internal class ContextFactory : IContextFactory
     {
-        private IContext CurrentContext { get; set; }
+        private IContext CurrentContext { get; set; } = null!;
 
         public ContextFactory()
         {
@@ -14,12 +14,6 @@ namespace Core.Kernel.DataAccess.Context
         public IContext Create()
         {
             return CurrentContext ??= CommonServiceLocator.ServiceLocator.Current.GetInstance<IContext>();
-        }
-
-        public void Dispose()
-        {
-            CurrentContext.Dispose();
-            CurrentContext = null;
         }
     }
 }

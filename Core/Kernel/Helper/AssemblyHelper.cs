@@ -19,7 +19,7 @@ namespace Core.Kernel.Helper
             return Directory.GetFiles(executionDirectory, includeCondition)
                             .Where(assembly => !excludedAssemblies.Contains(assembly))
                             .Select(Assembly.LoadFile)
-                            .Select(assembly => Assembly.Load(assembly.FullName))
+                            .Select(assembly => Assembly.Load(assembly.FullName!))
                             .ToList();
         }
     }
