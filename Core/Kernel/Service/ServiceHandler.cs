@@ -37,7 +37,7 @@ namespace Core.Kernel.Service
             }
         }
 
-        public async Task<IServiceResponse<TResponse>> HandleAsync<TResponse>(Func<Task<TResponse>> serviceHandlerDelegate) where TResponse : IDto
+        public async Task<IServiceResponse<TResponse>> HandleAsync<TResponse>(Func<Task<TResponse>> serviceHandlerDelegate) where TResponse : IDto?
         {
             try
             {
