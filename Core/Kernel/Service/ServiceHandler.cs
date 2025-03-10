@@ -36,5 +36,35 @@ namespace Core.Kernel.Service
                 };
             }
         }
+
+        public async Task<IServiceResponse<TResponse>> HandleAsync<TResponse>(Func<Task<TResponse>> serviceHandlerDelegate) where TResponse : IDto
+        {
+            try
+            {
+                var response = await serviceHandlerDelegate.Invoke();
+
+                await unitOfWork.CommitAsync();
+
+                return new ServiceResponse<TResponse>
+                {
+                    Data = response,
+                    Message = string.Empty,
+                    StatusCode = ResponseStatusCode.Success
+                };
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Handling service method has been failed. Service: {serviceHandlerDelegate.Target}; MethodName: {serviceHandlerDelegate.Method.Name}");
+
+                unitOfWork.Rollback();
+
+                return new ServiceResponse<TResponse>
+                {
+                    Data = default,
+                    Message = "Handling service method has been failed.",
+                    StatusCode = ResponseStatusCode.Failed
+                };
+            }
+        }
     }
 }
