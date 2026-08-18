@@ -7,15 +7,21 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DbProvider Condition="'$(DbProvider)' == ''">SqlServer</DbProvider>
+    <DefineConstants Condition="'$(DbProvider)' == 'Postgres'">$(DefineConstants);USE_POSTGRES</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Autofac" Version="8.1.1" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
     <PackageReference Include="Autofac.Extras.CommonServiceLocator" Version="6.1.0" />
     <PackageReference Include="CommonServiceLocator" Version="2.0.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.relational" Version="9.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
-    <PackageReference Include="Microsoft.extensions.logging.abstractions" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.relational" Version="9.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.4" Condition="'$(DbProvider)' != 'Postgres'" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" Condition="'$(DbProvider)' == 'Postgres'" />
+    <PackageReference Include="Microsoft.extensions.logging.abstractions" Version="9.0.4" />
   </ItemGroup>
 
   <ItemGroup>
