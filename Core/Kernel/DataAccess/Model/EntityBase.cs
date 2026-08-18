@@ -28,6 +28,15 @@ namespace Core.Kernel.DataAccess.Model
             }
         }
 
+#if USE_POSTGRES
+        public uint Version { get; private set; }
+
+        uint IEntity.Version
+        {
+            get => this.Version;
+            set => this.Version = value;
+        }
+#else
         public byte[] Version { get; private set; } = null!;
 
         byte[] IEntity.Version
@@ -35,6 +44,7 @@ namespace Core.Kernel.DataAccess.Model
             get => this.Version;
             set => this.Version = value;
         }
+#endif
 
         [NotMapped]
         public T TemporaryId { get; set; }
