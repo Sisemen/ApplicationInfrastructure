@@ -60,7 +60,7 @@ namespace Core.Kernel.DataAccess.Context
                     _logger.LogWarning("Context.OnModelCreating: {entityFullName} entity was not found.", entityType.FullName);
                 }
 
-                entity?.OnConfiguringEntity(modelBuilder);
+                entity?.ConfigureEntityCreation(modelBuilder);
             }
         }
 

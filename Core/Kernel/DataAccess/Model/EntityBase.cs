@@ -6,27 +6,27 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Kernel.DataAccess.Model
 {
-    public abstract class EntityBase<T> : IEntity where T : struct
-    {
-        [NotMapped]
-        public EntityKey<T>? Key { get; set; } = null;
+  public abstract class EntityBase<T> : IEntity where T : struct
+  {
+    [NotMapped]
+    public EntityKey<T>? Key { get; set; } = null;
 
-        [Key]
-        public T Id
+    [Key]
+    public T Id
+    {
+      get => Key?.Value ?? default;
+      set
+      {
+        if (Key is null)
         {
-            get => Key?.Value ?? default;
-            set
-            {
-                if (Key is null)
-                {
-                    Key = new EntityKey<T> { Value = value };
-                }
-                else
-                {
-                    Key.Value = value;
-                }
-            }
+          Key = new EntityKey<T> { Value = value };
         }
+        else
+        {
+          Key.Value = value;
+        }
+      }
+    }
 
 #if USE_POSTGRES
         public uint Version { get; private set; }
@@ -37,18 +37,32 @@ namespace Core.Kernel.DataAccess.Model
             set => this.Version = value;
         }
 #else
-        public byte[] Version { get; private set; } = null!;
+    public byte[] Version { get; private set; } = null!;
 
-        byte[] IEntity.Version
-        {
-            get => this.Version;
-            set => this.Version = value;
-        }
+    byte[] IEntity.Version
+    {
+      get => this.Version;
+      set => this.Version = value;
+    }
 #endif
 
-        [NotMapped]
-        public T TemporaryId { get; set; }
-        [NotMapped]
-        public abstract Action<ModelBuilder> OnConfiguringEntity { get; }
+    [NotMapped]
+    public T TemporaryId { get; set; }
+    [NotMapped]
+    protected abstract Action<ModelBuilder> OnConfiguringEntity { get; }
+    public void ConfigureEntityCreation(ModelBuilder modelBuilder)
+    {
+      var entityType = modelBuilder.Entity(GetType());
+#if USE_POSTGRES
+      entityType.Property(nameof(Version))
+          .IsRowVersion();
+#else
+      entityType.Property(nameof(Version))
+          .HasColumnType("timestamp")
+          .IsRowVersion();
+#endif
+
+      OnConfiguringEntity?.Invoke(modelBuilder);
     }
+  }
 }

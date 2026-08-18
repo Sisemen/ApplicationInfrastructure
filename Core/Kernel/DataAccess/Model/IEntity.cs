@@ -11,6 +11,7 @@ namespace Core.Kernel.DataAccess.Model
         byte[] Version { get; set; }
 #endif
 
-        Action<ModelBuilder> OnConfiguringEntity { get; }
+        //Action<ModelBuilder> OnConfiguringEntity { get; }
+        void ConfigureEntityCreation(ModelBuilder modelBuilder);
     }
 }
